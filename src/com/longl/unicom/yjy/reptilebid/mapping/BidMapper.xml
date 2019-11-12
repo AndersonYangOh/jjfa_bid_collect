@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.longl.unicom.yjy.reptilebid.dao.IBidDao">
+	<resultMap id="bidmap"
+		type="com.longl.unicom.yjy.reptilebid.model.BidModel">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+		<result column="dtime" property="dtime" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="content" property="content" jdbcType="VARCHAR" />
+		<result column="num" property="num" jdbcType="VARCHAR" />
+		<result column="filenum" property="filenum" jdbcType="VARCHAR" />
+		<result column="province" property="province" jdbcType="VARCHAR" />
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="INTEGER" />
+		<result column="assortment" property="assortment" jdbcType="INTEGER" />
+		<result column="endtime" property="endtime" jdbcType="VARCHAR" />
+		<result column="bidtype" property="bidtype" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,title,dtime,url,province,type,assortment
+	</sql>
+	
+	
+	<select id="getzbinfolist" resultMap="bidmap">
+		select
+		<include refid="Base_Column_List" />
+		from bid WHERE bidtype=2 AND `status`=1 AND id NOT in(SELECT id FROM
+		bid_ex)
+	</select>
+	
+	<select id="zbdetailsearch" resultMap="bidmap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from bid WHERE bidtype=2 AND `status`=1 AND dtime<![CDATA[ >= ]]>#{starttime} and dtime<![CDATA[ <= ]]>#{endtime} and sbidname<![CDATA[ <> ]]>'tongx'
+	</select>
+	
+	<select id="gettongjiinfolist" resultMap="bidmap" parameterType="java.util.Map">
+		select
+		<include refid="Base_Column_List" />
+		from bid WHERE bidtype=2 AND `status`=1 and province=#{province} ORDER BY dtime desc
+	</select>
+	
+	<insert id="insert" parameterType="com.longl.unicom.yjy.reptilebid.model.BidModel">
+		insert into bid
+		(title, url, dtime, num, filenum, content,
+		province,city,createtime,endtime,bidtype)
+		value(#{title}, #{url},
+		#{dtime},#{num},#{filenum},#{content},#{province},#{city},#{createtime},#{endtime},#{bidtype})
+	</insert>
+</mapper>
